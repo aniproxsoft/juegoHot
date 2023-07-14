@@ -1,9 +1,9 @@
 <?php
 header("Cache-Control: no-cache");
 require_once "ClassConnection.php";
-require_once "./php/service/DTO/DesafioDTO.php";
-require_once "./php/service/DTO/JugadorDTO.php";
-require_once "./php/service/DTO/NivelDTO.php";
+require_once "./DTO/DesafioDTO.php";
+require_once "./DTO/JugadorDTO.php";
+require_once "./DTO/NivelDTO.php";
 Class CtrlJuego {
     
     function getDesafios($nivel) {
@@ -112,8 +112,16 @@ Class CtrlJuego {
                     $desafiosSeleccionados = array();
                     $asignaciones = array(); // Arreglo de asignaciones
                     if(count($desafios)<$nivel->getNumeroDesafios()){
-                        $desafiosSeleccionados=$desafios;
+                        shuffle($desafios);
+                        $indicesAleatorios = array_rand($desafios, count($desafios));
+                        //echo '<br>'.json_encode($indicesAleatorios);
+                        // Arreglo nuevo con los desafíos seleccionados al azar
+            
+                        foreach ($indicesAleatorios as $indice) {
+                            $desafiosSeleccionados[] = $desafios[$indice];
+                        }
                     }else{
+                        shuffle($desafios);
                         $indicesAleatorios = array_rand($desafios, $nivel->getNumeroDesafios());
 
                         // Arreglo nuevo con los desafíos seleccionados al azar
