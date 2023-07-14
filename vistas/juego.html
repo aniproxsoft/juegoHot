@@ -33,11 +33,17 @@
             background-color: #F2D5F8;
             /* Cambiar el color de fondo aquí */
         }
+
+        .btn-grande {
+            width: 100%;
+            height: 50%;
+            font-size: 1.5rem;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark">
+    <nav class="navbar navbar-expand-lg navbar-dark btn-grande">
         <div class="container">
             <a class="navbar-brand" href="#">JuegoHot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -71,6 +77,7 @@
             <div id="jugadorContainer"></div>
             <button class="btn btn-purple float-end" id="siguienteBtn">Siguiente</button>
         </div>
+
     </div>
 
 
@@ -93,7 +100,7 @@
                         var componentesHtml = '';
                         componentesHtml =
                             '<div class="card text-center ">' +
-                            '<div class="card-body btn-purple">' +
+                            '<div id="cardNivel" class="card-body btn-purple">' +
                             '<h1 class="card-title">' + nivel.nivel_nombre + '</h1>' +
                             '<p class="card-text h3">' + nivel.adicional + '</p>' +
                             '</div>' +
@@ -204,13 +211,16 @@
                 if (anchoPantalla < 1000) {
                     $('#contenedor').removeClass('d-flex').addClass('container-sm');
                     $('#contenedor').removeClass('justify-content-center');
-                    $('#contenedor').removeClass('align-items-center');
+                    $('#contenedor').removeClass('align-items-center ');
                     $('#contenedor').addClass('container-fluid full-screen-container');
+                    $('#siguienteBtn').addClass('btn-grande');
+                    $('#cardNivel').addClass('btn-grande');
 
                 } else {
                     $('#contenedor').removeClass('container-sm').addClass('d-flex');
                     $('#contenedor').addClass('justify-content-center');
                     $('#contenedor').addClass('align-items-center');
+                    $('#siguienteBtn').removeClass('btn-grande');
                 }
             }
 
