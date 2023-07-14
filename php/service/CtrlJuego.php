@@ -111,7 +111,7 @@ Class CtrlJuego {
                 if (!empty($desafios)) {
                     $desafiosSeleccionados = array();
                     $asignaciones = array(); // Arreglo de asignaciones
-                    if(count($desafios)<=$nivel->getNumeroDesafios()){
+                    if(count($desafios)<$nivel->getNumeroDesafios()){
                         $desafiosSeleccionados=$desafios;
                     }else{
                         $indicesAleatorios = array_rand($desafios, $nivel->getNumeroDesafios());
