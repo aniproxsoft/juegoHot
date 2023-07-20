@@ -39,6 +39,9 @@
             height: 50%;
             font-size: 1.5rem;
         }
+        .play-grande{
+            width: 1.5rem;
+        }
 
         .custom-btn:hover {
             background-color: #800080;
@@ -108,11 +111,11 @@
                         componentesHtml =
                             '<div class="card text-center ">' +
                             '<div id="cardNivel" class="card-body btn-purple">' +
-                            '<h1 class="card-title">' + nivel.nivel_nombre + '</h1>' +
+                            '<h1 class="card-title h1">' + nivel.nivel_nombre + '</h1>' +
                             '<p class="card-text h3">' + nivel.adicional + '</p>' +
                             '</div>' +
                             '<div class="card-footer  btn-purple">' +
-                            '<label >Diviertanse!!!</label>' +
+                            '<label class="h4" >Diviertanse!!!</label>' +
                             '</div>' +
                             '</div>';
                         $("#nivelContainer").html(componentesHtml);
@@ -126,21 +129,21 @@
                         componentesHtml =
                             '<div class="card">' +
                             '<div class="card-header btn-purple">' +
-                            '<label  class="form-label h4">' + desafio.nivelNombre + '</label>' +
-                            '<label class="h5">' + '-' + desafio.adicional + '</label>' +
+                            '<label  class="form-label h2">' + desafio.nivelNombre + '</label>' +
+                            '<label class="h3">' + '-' + desafio.adicional + '</label>' +
                             '</div>' +
                             '<div class="card-body">' +
-                            '<h5 id="jugadorNombre" class="card-title">' + jugador.jugadorNombre + '</h5>' +
-                            '<p id="desafioDesc" class="card-text">' + desafio.desafioDesc +
+                            '<h5 id="jugadorNombre" class="card-title h2 font-weight-bold">' + jugador.jugadorNombre + '</h5>' +
+                            '<p id="desafioDesc" class="card-text h3">' + desafio.desafioDesc +
                             '</div>' +
                             '</div>';
 
 
                         if (desafio.tiempoSegundos > 0) {
                             $("#siguienteBtn").prop("disabled", true);
-                            componentesHtml += '<br><span id="desafioSegundos">Durante: ' + desafio.tiempoSegundos +
-                                ' Segundos</span><br/><button class="btn btn-purple float-end" id="playBtn"' +
-                                ' onclick="iniciaTemporizador(' + desafio.tiempoSegundos + ')"> <i class="fas fa-play"></i></button>';
+                            componentesHtml += '<br><span class="h2" id="desafioSegundos">Durante: ' + desafio.tiempoSegundos +
+                                ' Segundos</span><br/><button class="btn btn-purple float-end btn-lg btn-block" id="playBtn"' +
+                                ' onclick="iniciaTemporizador(' + desafio.tiempoSegundos + ')"> <i class="fas fa-play k" ></i></button>';
 
                         }
                         $("#jugadorContainer").html(componentesHtml);
