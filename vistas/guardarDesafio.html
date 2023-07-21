@@ -117,17 +117,224 @@
                             <input id="estado" class="form-check-input  form-control-lg" type="checkbox" value=""
                                 id="flexCheckDisabled">
                         </div>
-                        <br />
+                        <br>
+                        <h2>Ejemplo del desafio en el juego</h2>
+                        <br>
+                        <div id="jugadoresContainer"></div>
+                        <br>
+                        <div class="h2" id="ejemploDesafio"></div>
+                        <br /><br /><br />
                         <button type="submit" class="btn btn-purple float-end h1 btn-lg custom-btn">Guardar</button>
+
+
                 </form>
                 <input id="desafioId" type="hidden" value="">
-                <div id="respuesta"></div>
+
+
             </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
         $(document).ready(function () {
+            var jugadorSeleccionado;
+            $.ajax({
+                url: '../php/service/ServiceAdmin.php?opcion=jug', // Reemplaza 'ruta_a_tu_archivo_php.php' con la ruta correcta a tu archivo PHP
+                type: 'get',
+                data: { user: 1 }, // Puedes cambiar el valor de 'user' según tus necesidades
+                dataType: 'json',
+                success: function (data) {
+                    if (data.length === 0) {
+                        console.log('El arreglo esta vacio.');
+                    } else {
+                        jugadorSeleccionado = $('input[name="jugador"]:checked').val();
+                        generarRadioButtonsJugadores(data);
+                        console.log('El arreglo no esta vacio.');
+                    }
+                },
+                error: function () {
+                    console.log('Error al obtener los jugadores.');
+                }
+            });
+            // Función para generar los radio buttons con los jugadores recibidos
+            function generarRadioButtonsJugadores(jugadores) {
+                var jugadoresContainer = $('#jugadoresContainer');
+                var jugadorSeleccionado; // Variable para almacenar el radio button seleccionado
+
+                // Recorrer los jugadores y generar los radio buttons
+                $.each(jugadores, function (index, jugador) {
+                    var jugadorId = jugador.jugadorId;
+                    var jugadorNombre = jugador.jugadorNombre;
+
+                    // Generar el radio button y etiqueta con el nombre del jugador utilizando Bootstrap
+                    var radioOption = $('<input>').attr({
+                        type: 'radio',
+                        class: 'form-check-input form-control-lg',
+                        name: 'jugador',
+                        value: jugadorId,
+                        id: 'jugador_' + jugadorId + '_' + jugador.jugadorSexo,
+                    });
+
+                    var labelOption = $('<label style="marging-left:20px">')
+                        .addClass('form-check-label h2')
+                        .attr('for', 'jugador_' + jugadorId)
+                        .text(jugadorNombre)
+                        .prepend(radioOption);
+
+                    // Agregar el radio button y etiqueta al contenedor
+                    jugadoresContainer.append(labelOption);
+
+                    // Agregar evento change a los radio buttons generados
+                    radioOption.change(function () {
+                        generaEjemplo();
+                    });
+
+                    // Almacenar el valor del primer radio button seleccionado
+                    if (index === 0) {
+                        jugadorSeleccionado = jugadorId;
+                        radioOption.prop('checked', true);
+                    } else if (index > 0) {
+                        generaEjemplo();
+                    }
+                    function generaEjemplo() {
+                        const texto = $('#desafio_desc').val();
+                        let cadena = texto;
+                        let ultimaLetra = cadena.slice(-2).toLowerCase();
+                        var textosChecked = [];
+                        var textosNoChecked = [];
+                        if ($('#jugadoresContainer input[name="jugador"]').length > 0) {
+                            // Recorrer los radio buttons con el nombre 'jugador'
+                            $('input[name="jugador"]').each(function () {
+                                var id = $(this).attr('id');
+                                var texto = $(this).parent().text().trim();
+
+                                if ($(this).prop('checked')) {
+                                    textosChecked.push({ id: id, texto: texto });
+                                } else {
+                                    textosNoChecked.push({ id: id, texto: texto });
+                                }
+                            });
+
+                            var sexoJugadorSeleccionado = textosChecked[0].id.split("_")[2];
+                            var nombreJugadorSeleccionado = textosChecked[0].texto;
+                            var sexoJugadorNoSeleccionado = textosNoChecked[0].id.split("_")[2];
+                            var nombreJugadorNoSeleccionado = textosNoChecked[0].texto;
+                            var nuevoTexto = nombreJugadorSeleccionado + ' ' + texto;
+
+                            console.log(sexoJugadorSeleccionado + nombreJugadorSeleccionado + sexoJugadorNoSeleccionado + nombreJugadorNoSeleccionado);
+                            if (ultimaLetra === ' a' || ultimaLetra === 'de') {
+                                nuevoTexto = nombreJugadorSeleccionado + ' ' + texto + ' ' + nombreJugadorNoSeleccionado;
+                            }
+
+                            let palabras = cadena.trim().toLowerCase().split(" ");
+                            let primeraPalabra = palabras[0];
+
+                            if (primeraPalabra === 'penetrar') {
+                                console.log('entra')
+                                switch (sexoJugadorSeleccionado) {
+                                    case 'M':
+                                        nuevoTexto = texto.toLowerCase().replace('penetrar', nombreJugadorSeleccionado + ' penetra a ' + nombreJugadorNoSeleccionado + ' ');
+
+                                        break;
+                                    case 'F':
+                                        nuevoTexto = texto.toLowerCase().replace('penetrar', nombreJugadorSeleccionado + ' deja que ' + nombreJugadorNoSeleccionado + ' te penetre ');
+
+
+                                        break;
+                                }
+
+                            } else if (primeraPalabra === 'penetra') {
+                                console.log('entra')
+                                switch (sexoJugadorSeleccionado) {
+                                    case 'M':
+                                        nuevoTexto = texto.toLowerCase().replace('penetra', nombreJugadorSeleccionado + ' penetra a ' + nombreJugadorNoSeleccionado + ' ');
+
+                                        break;
+                                    case 'F':
+                                        nuevoTexto = texto.toLowerCase().replace('penetra', nombreJugadorSeleccionado + ' deja que ' + nombreJugadorNoSeleccionado + ' te penetre ');
+
+
+                                        break;
+                                }
+                            }
+
+
+                        }
+                        // Actualizar el contenido del otro div con el texto ingresado
+                        $('#ejemploDesafio').text(nuevoTexto);
+                    }
+                });
+            }
+
+            $('#desafio_desc').on('input', function () {
+                // Obtener el texto ingresado en el textarea
+                var texto = $(this).val();
+                let cadena = texto;
+                let ultimaLetra = cadena.slice(-2).toLowerCase();
+                var textosChecked = [];
+                var textosNoChecked = [];
+                if ($('#jugadoresContainer input[name="jugador"]').length > 0) {
+                    // Recorrer los radio buttons con el nombre 'jugador'
+                    $('input[name="jugador"]').each(function () {
+                        var id = $(this).attr('id');
+                        var texto = $(this).parent().text().trim();
+
+                        if ($(this).prop('checked')) {
+                            textosChecked.push({ id: id, texto: texto });
+                        } else {
+                            textosNoChecked.push({ id: id, texto: texto });
+                        }
+                    });
+
+                    var sexoJugadorSeleccionado = textosChecked[0].id.split("_")[3];
+                    var nombreJugadorSeleccionado = textosChecked[0].texto;
+                    var sexoJugadorNoSeleccionado = textosNoChecked[0].id.split("_")[3];
+                    var nombreJugadorNoSeleccionado = textosNoChecked[0].texto;
+                    var nuevoTexto = nombreJugadorSeleccionado + ' ' + texto;
+
+                    console.log(sexoJugadorSeleccionado + nombreJugadorSeleccionado + sexoJugadorNoSeleccionado + nombreJugadorNoSeleccionado);
+                    if (ultimaLetra === ' a' || ultimaLetra === 'de') {
+                        nuevoTexto = nombreJugadorSeleccionado + ' ' + texto + ' ' + nombreJugadorNoSeleccionado;
+                    }
+
+                    let palabras = cadena.trim().toLowerCase().split(" ");
+                    let primeraPalabra = palabras[0];
+
+                    if (primeraPalabra === 'penetrar') {
+                        console.log('entra')
+                        switch (sexoJugadorSeleccionado) {
+                            case 'M':
+                                nuevoTexto = texto.toLowerCase().replace('penetrar', nombreJugadorSeleccionado + ' penetra a ' + nombreJugadorNoSeleccionado + ' ');
+
+                                break;
+                            case 'F':
+                                nuevoTexto = texto.toLowerCase().replace('penetrar', nombreJugadorSeleccionado + ' deja que ' + nombreJugadorNoSeleccionado + ' te penetre ');
+
+
+                                break;
+                        }
+
+                    } else if (primeraPalabra === 'penetra') {
+                        console.log('entra')
+                        switch (sexoJugadorSeleccionado) {
+                            case 'M':
+                                nuevoTexto = texto.toLowerCase().replace('penetra', nombreJugadorSeleccionado + ' penetra a ' + nombreJugadorNoSeleccionado + ' ');
+
+                                break;
+                            case 'F':
+                                nuevoTexto = texto.toLowerCase().replace('penetra', nombreJugadorSeleccionado + ' deja que ' + nombreJugadorNoSeleccionado + ' te penetre ');
+
+
+                                break;
+                        }
+                    }
+
+
+                }
+                // Actualizar el contenido del otro div con el texto ingresado
+                $('#ejemploDesafio').text(nuevoTexto);
+            });
+
             $.ajax({
                 url: '../php/service/ServiceAdmin.php?opcion=gtn', // Reemplaza 'ruta_al_archivo_php.php' por la ruta correcta a tu archivo PHP
                 dataType: 'json',
@@ -146,7 +353,7 @@
             $('#insertarDesafioForm').submit(function (e) {
                 const descripcionInput = document.getElementById("desafio_desc");
                 const descripcionValue = descripcionInput.value.trim();
-                const descripcionPattern = /^[a-zA-Z0-9 ]{3,255}$/;
+                const descripcionPattern = /^[a-zA-Z0-9() ]{3,255}$/;
 
                 if (!descripcionPattern.test(descripcionValue)) {
                     event.preventDefault();
@@ -159,7 +366,7 @@
                     var usuario_id = $('#usuario_id').val();
                     var desafio_desc = $('#desafio_desc').val();
                     var tiempo_segundos = $('#tiempo_segundos').val();
-                    var status = $('#estado').is(':checked') ? 1 : 0;
+                    var status = $('#estado').is(':checked') ? 1 : '';
                     // Obtén la URL actual
                     const urlParams = new URLSearchParams(window.location.search);
 

@@ -118,6 +118,7 @@
     <a class="floating-button" onclick="scrollToTop()"><i class="fas fa-chevron-up"></i></a>
     <a href="guardarDesafio.html?opc=save" class="floating-button"><i class="fas fa-plus"></i></a>
 
+    <div id="alertContainer" style="margin-top: 20px;" class="h2"></div>
     <div class="container-fluid fullscreen">
 
         <ul class="list-group"></ul>
@@ -177,8 +178,13 @@
                         componentesHtml +=
                             '<div class="card  fondoCard">' +
                             '<div id="cardNivel" class="card-body ">' +
-                            '<h1 class="card-title">' + desafio.desafio_desc + '</h1>' +
-                            '<p class="card-text h3">Durante: ' + tiempoSegundos + ' Segundos</p>' +
+                            '<h1 class="card-title">' + desafio.desafio_desc + '</h1>';
+                        if (tiempoSegundos > 0) {
+                            componentesHtml +=
+                                '<p class="card-text h3">Durante: ' + tiempoSegundos + ' Segundos</p>';
+
+                        }
+                        componentesHtml +=
                             '<button class="btn float-end btn-danger h2">' +
                             '<i class="fa fa-trash"></i>' +
                             '</button>' +
@@ -204,6 +210,7 @@
                                 '</div>';
                         }
 
+
                         componentesHtml += '<div class="card-footer  ">' +
                             '<label >' + desafio.nivel_nombre + '</label>' +
                             '</div>' +
@@ -211,6 +218,67 @@
 
 
                         listItem.html(componentesHtml);
+                        listItem.find('.form-check-input').change(function () {
+                            var checkbox = $(this);
+                            var desafioId = desafio.desafio_id;
+                            var status = checkbox.prop('checked') ? 1 : 0;
+                            console.log(desafioId);
+                            console.log(status);
+                            // Realiza la llamada AJAX para actualizar el estado del desafío
+                            $.ajax({
+                                url: '../php/service/ServiceAdmin.php',
+                                type: 'get',
+                                data: {
+                                    opcion: 'estatus',
+                                    desafioID: desafioId,
+                                    estatus: status
+                                },
+                                dataType: 'json',
+                                success: function (data) {
+                                    console.log(data);
+                                    // Muestra el alert de éxito si la respuesta es true, de lo contrario, muestra el alert de error
+                                    var mensaje = data.success ? 'Estatus actualizado' : 'Error al actualizar estatus';
+                                    var alertClass = data.success ? 'alert-success' : 'alert-danger';
+                                    showAlert(mensaje, alertClass);
+                                    scrollToTop();
+                                },
+                                error: function () {
+                                    showAlert('Error al actualizar el desafio.', 'alert-danger');
+                                    scrollToTop();
+                                }
+                            });
+                        });
+                        // Agrega el evento click al botón "Eliminar" generado para este desafío
+                        listItem.find('.btn-danger').click(function () {
+                            var desafioId = desafio.desafio_id;
+
+                            // Realiza la llamada AJAX para actualizar el estado del desafío a 2 (eliminado)
+                            $.ajax({
+                                url: '../php/service/ServiceAdmin.php',
+                                type: 'get',
+                                data: {
+                                    opcion: 'estatus',
+                                    desafioID: desafioId,
+                                    estatus: 2
+                                },
+                                dataType: 'json',
+                                success: function (data) {
+                                    // Muestra el alert de éxito si la respuesta es true, de lo contrario, muestra el alert de error
+                                    var mensaje = data.success ? 'Desafio eliminado exitosamente.' : 'Ocurrio un error al eliminar el desafio.';
+                                    var alertClass = data.success ? 'alert-success' : 'alert-danger';
+                                    showAlert(mensaje, alertClass);
+                                    scrollToTop();
+                                    // Eliminar el desafío de la lista en el front-end si se eliminó exitosamente en el backend
+                                    if (data.resultado) {
+                                        listItem.remove();
+                                    }
+                                },
+                                error: function () {
+                                    showAlert('Error al eliminar el desafio.', 'alert-danger');
+                                    scrollToTop();
+                                }
+                            });
+                        });
                         componentesHtml = '';
                         // Agregar el desafío al contenedor
                         listView.append(listItem);
@@ -226,6 +294,18 @@
                     console.log('Error al obtener los desafíos.');
                 }
             });
+        }
+        function showAlert(mensaje, alertClass) {
+            var alertContainer = $('<div>').addClass('alert ' + alertClass).text(mensaje);
+            $('#alertContainer').append(alertContainer);
+
+            // Ocultar el alert después de 3 segundos
+            setTimeout(function () {
+                alertContainer.fadeOut(function () {
+                    $(this).remove();
+                    cargarDesafiosFiltrados('all', '', 'all');
+                });
+            }, 3000);
         }
         $(document).on('click', '.btnEditar', function () {
             // Obtener el desafío asociado al botón "Editar" en la misma fila
@@ -253,7 +333,7 @@
                 name: 'opc',
                 value: 'update'
             }));
-            
+
             form.append($('<input>').attr({
                 type: 'hidden',
                 name: 'desafio_id',

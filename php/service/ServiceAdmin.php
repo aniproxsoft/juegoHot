@@ -2,13 +2,41 @@
 require_once 'CtrlJuego.php';
 require_once 'CtrlAdmin.php';
 class ServiceAdmin {
-    public function procesarOpcion($opcion) {
+    public function procesarOpcion($opcion,$status,$desafioId) {
         $ctrlJuego = new CtrlJuego();
         $ctrlAdmin = new CtrlAdmin();
         switch ($opcion) {
             case 'gtn':
                 $niveles = $ctrlJuego->getNiveles();
                 echo $this->convertirNivelesAJSON($niveles);
+                break;
+            case 'jug':
+                $user = $_GET['user'];
+                $jugadores = $ctrlJuego->getJugadores($user);
+                foreach ($jugadores as $jugador) {
+                    $jugadores_json[] = json_decode($jugador->toJson(), true);
+                }
+                
+                // Imprimir el arreglo JSON completo
+                echo json_encode($jugadores_json, JSON_PRETTY_PRINT);
+                break;
+             case 'estatus':
+                $ctrlAdmin = new CtrlAdmin();
+                $resultado = $ctrlAdmin->actualizaEstausDesafio($desafioId, $status);
+            
+                // Prepara la respuesta en formato JSON
+                $response = array();
+                if ($resultado) {
+                    // Respuesta exitosa
+                    $response['success'] = true;
+                } else {
+                    // Error al insertar el desafío
+                    $response['success'] = false;
+                }
+            
+                // Devuelve la respuesta en formato JSON
+                header('Content-Type: application/json');
+                echo json_encode($response);
                 break;
             default:
                 echo "Opcion invalida";
@@ -39,8 +67,22 @@ class ServiceAdmin {
 // Crear una instancia de la clase y llamar al método procesarOpcion con el parámetro deseado
 $serviceAdmin = new ServiceAdmin();
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
+    $desafioId=0;
+    $estatus='';
     $opcionGet = $_GET['opcion']; // Obtener el valor de la opción desde el parámetro GET
-    $serviceAdmin->procesarOpcion($opcionGet);
+
+    // Verificar si el parámetro "estatus" está presente y no está vacío
+    if (isset($_GET['estatus']) && !empty($_GET['estatus'])) {
+        $estatus = $_GET['estatus'];
+       
+    } 
+
+    // Verificar si el parámetro "desafioID" está presente y no está vacío
+    if (isset($_GET['desafioID']) && !empty($_GET['desafioID'])) {
+        $desafioId = $_GET['desafioID'];
+        
+    } 
+    $serviceAdmin->procesarOpcion($opcionGet,$estatus,$desafioId);
 }
 
 

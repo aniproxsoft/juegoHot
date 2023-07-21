@@ -143,7 +143,7 @@ Class CtrlJuego {
                         $desafio = $desafiosSeleccionados[$i]; // Desafío actual
                         $cadena = $desafio->getDesafioDesc();
                         $ulimaLetra = substr($cadena, -2);
-                        if(strtolower(trim($ulimaLetra)) == 'a' || strtolower(trim($ulimaLetra)) == 'de' ){
+                        if(strtolower($ulimaLetra) == ' a' || strtolower($ulimaLetra) == 'de' ){
                             $jugadorEncontrado = null;
                                 foreach ($jugadores as $jugadorActual) {
                                     if ($jugadorActual->getJugadorId() != $jugador->getJugadorId()) {
@@ -180,6 +180,33 @@ Class CtrlJuego {
                                 case 'F':
                                     if ($jugadorEncontrado !== null) {
                                         $nuevaCadena = str_replace("penetrar", "Deja que ".$jugadorEncontrado->getJugadorNombre().' te penetre ', strtolower($cadena));
+                                        $desafio->setDesafioDesc($nuevaCadena);
+                                
+                                    }
+                                    break;
+                            }
+                            
+                        }
+                        if($primeraPalabra=='penetra'){
+                            $jugadorEncontrado = null;
+                                foreach ($jugadores as $jugadorActual) {
+                                    if ($jugadorActual->getJugadorId() != $jugador->getJugadorId()) {
+                                        $jugadorEncontrado = $jugadorActual;
+                                        break; // Terminar el bucle al encontrar el primer objeto
+                                    }
+                                }
+                                
+                            switch($jugador->getJugadorSexo()){
+                                case 'M':
+                                    if ($jugadorEncontrado !== null) {
+                                        $nuevaCadena = str_replace("penetra", "Penetra a ".$jugadorEncontrado->getJugadorNombre().' ', strtolower($cadena));
+                                        $desafio->setDesafioDesc($nuevaCadena);
+                                
+                                    }
+                                    break;
+                                case 'F':
+                                    if ($jugadorEncontrado !== null) {
+                                        $nuevaCadena = str_replace("penetra", "Deja que ".$jugadorEncontrado->getJugadorNombre().' te penetre ', strtolower($cadena));
                                         $desafio->setDesafioDesc($nuevaCadena);
                                 
                                     }
