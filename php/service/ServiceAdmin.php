@@ -56,6 +56,24 @@ class ServiceAdmin {
                 header('Content-Type: application/json');
                 echo json_encode($response);
                 break;
+            case 'actualizaNivel':
+                $ctrlAdmin = new CtrlAdmin();
+                $resultado = $ctrlAdmin->actualizaEstausNivel($id, $status);
+                echo $status;
+                // Prepara la respuesta en formato JSON
+                $response = array();
+                if ($resultado) {
+                    // Respuesta exitosa
+                    $response['success'] = true;
+                } else {
+                    // Error al insertar el desafío
+                    $response['success'] = false;
+                }
+            
+                // Devuelve la respuesta en formato JSON
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                break;
             default:
                 echo "Opcion invalida";
                 break;
@@ -158,6 +176,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST['jugador_id'])) {
         $jugador_id = $_POST['jugador_id'];
     } 
+    if (isset($_POST['nivel_id'])) {
+        $nivel_id = $_POST['nivel_id'];
+    }
+    
+    if (isset($_POST['nivel_nombre'])) {
+        $nivel_nombre = $_POST['nivel_nombre'];
+    }
+    
+    if (isset($_POST['nivel_desc'])) {
+        $nivel_desc = $_POST['nivel_desc'];
+    }
+    
+    if (isset($_POST['adicional'])) {
+        $adicional = $_POST['adicional'];
+    }
+    
+    if (isset($_POST['estatus_nivel'])) {
+        $estatus_nivel = $_POST['estatus_nivel'];
+    }
+    if (isset($_POST['numero_desafios'])) {
+        $numero_desafios = $_POST['numero_desafios'];
+    }
+    
     switch ($opcionPost) {
         case 'save':
             $ctrlAdmin = new CtrlAdmin();
@@ -216,6 +257,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          case 'editaJugador':
             $ctrlAdmin = new CtrlAdmin();
             $resultado = $ctrlAdmin->actualizarJugador($jugador_id, $jugador_nombre, $jugador_sexo);
+            
+            // Prepara la respuesta en formato JSON
+            $response = array();
+            if ($resultado) {
+                // Respuesta exitosa
+                $response['success'] = true;
+            } else {
+                // Error al insertar el desafío
+                $response['success'] = false;
+            }
+        
+            // Devuelve la respuesta en formato JSON
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            break;
+         case 'agregaNivel':
+            $ctrlAdmin = new CtrlAdmin();
+            $resultado = $ctrlAdmin->insertarNivel($nivel_id, $nivel_nombre, $nivel_desc, $adicional, $estatus_nivel,$numero_desafios);
+            
+            // Prepara la respuesta en formato JSON
+            $response = array();
+            if ($resultado) {
+                // Respuesta exitosa
+                $response['success'] = true;
+            } else {
+                // Error al insertar el desafío
+                $response['success'] = false;
+            }
+        
+            // Devuelve la respuesta en formato JSON
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            break;
+         case 'editaNivel':
+            $ctrlAdmin = new CtrlAdmin();
+            $resultado = $ctrlAdmin->actualizarNivel($nivel_id, $nivel_nombre, $nivel_desc, $adicional,$numero_desafios);
             
             // Prepara la respuesta en formato JSON
             $response = array();

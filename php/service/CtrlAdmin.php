@@ -110,6 +110,53 @@ Class CtrlAdmin{
     
         return $resultado;
     }
+    function actualizaEstausNivel($nivelId, $status) {
+        $db = new connectionDB();
+        $conexion = $db->get_connection();
+
+        $statement = $conexion->prepare("CALL actualizar_estatus_nivel(?, ?)");
+        $statement->bindParam(1, $nivelId, PDO::PARAM_INT);
+        $statement->bindParam(2, $status, PDO::PARAM_INT);
+        $statement->execute();
+        $resultado = $statement->fetch(PDO::FETCH_ASSOC);
+    
+        return $resultado;
+    }
+    function actualizarNivel($nivel_id, $nivel_nombre, $nivel_desc, $adicional,$numero_desafios) {
+        $db = new connectionDB();
+        $conexion = $db->get_connection();
+    
+        // Configuración de la conexión a la base de datos
+        $statement = $conexion->prepare("CALL actualizar_nivel(?, ?, ?, ?,?)");
+        $statement->bindParam(1, $nivel_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $nivel_nombre, PDO::PARAM_STR);
+        $statement->bindParam(3, $nivel_desc, PDO::PARAM_STR);
+        $statement->bindParam(4, $adicional, PDO::PARAM_STR);
+        $statement->bindParam(5, $numero_desafios, PDO::PARAM_INT);
+        $statement->execute();
+    
+        $resultado = $statement->fetch(PDO::FETCH_ASSOC);
+    
+        return $resultado;
+    }
+    function insertarNivel($nivel_id, $nivel_nombre, $nivel_desc, $adicional, $estatus_nivel,$numero_desafios) {
+        $db = new connectionDB();
+        $conexion = $db->get_connection();
+    
+        // Configuración de la conexión a la base de datos
+        $statement = $conexion->prepare("CALL insertar_nivel(?, ?, ?, ?, ?,?)");
+        $statement->bindParam(1, $nivel_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $nivel_nombre, PDO::PARAM_STR);
+        $statement->bindParam(3, $nivel_desc, PDO::PARAM_STR);
+        $statement->bindParam(4, $adicional, PDO::PARAM_STR);
+        $statement->bindParam(5, $estatus_nivel, PDO::PARAM_INT);
+        $statement->bindParam(6, $numero_desafios, PDO::PARAM_INT);
+        $statement->execute();
+    
+        $resultado = $statement->fetch(PDO::FETCH_ASSOC);
+    
+        return $resultado;
+    }
 }
 
 ?>
