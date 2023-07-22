@@ -66,7 +66,50 @@ Class CtrlAdmin{
     
         return $resultado;
     }
+
+    function actualizaEstausJugador($jugadorId, $status) {
+        $db = new connectionDB();
+        $conexion = $db->get_connection();
+
+        $statement = $conexion->prepare("CALL actualizar_estatus_jugador(?, ?)");
+        $statement->bindParam(1, $jugadorId, PDO::PARAM_INT);
+        $statement->bindParam(2, $status, PDO::PARAM_INT);
+        $statement->execute();
+        $resultado = $statement->fetch(PDO::FETCH_ASSOC);
     
+        return $resultado;
+    }
+    function insertarJugador($usuario_id, $jugador_nombre, $jugador_sexo, $estatus_jugador) {
+        $db = new connectionDB();
+        $conexion = $db->get_connection();
+    
+        // Configuración de la conexión a la base de datos
+        $statement = $conexion->prepare("CALL insertar_jugador(?, ?, ?, ?)");
+        $statement->bindParam(1, $usuario_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $jugador_nombre, PDO::PARAM_STR);
+        $statement->bindParam(3, $jugador_sexo, PDO::PARAM_STR);
+        $statement->bindParam(4, $estatus_jugador, PDO::PARAM_INT);
+        $statement->execute();
+    
+        $resultado = $statement->fetch(PDO::FETCH_ASSOC);
+    
+        return $resultado;
+    }
+    function actualizarJugador($jugador_id, $jugador_nombre, $jugador_sexo) {
+        $db = new connectionDB();
+        $conexion = $db->get_connection();
+    
+        // Configuración de la conexión a la base de datos
+        $statement = $conexion->prepare("CALL actualizar_jugador(?, ?, ?)");
+        $statement->bindParam(1, $jugador_id, PDO::PARAM_INT);
+        $statement->bindParam(2, $jugador_nombre, PDO::PARAM_STR);
+        $statement->bindParam(3, $jugador_sexo, PDO::PARAM_STR);
+        $statement->execute();
+    
+        $resultado = $statement->fetch(PDO::FETCH_ASSOC);
+    
+        return $resultado;
+    }
 }
 
 ?>

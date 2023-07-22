@@ -2,7 +2,7 @@
 require_once 'CtrlJuego.php';
 require_once 'CtrlAdmin.php';
 class ServiceAdmin {
-    public function procesarOpcion($opcion,$status,$desafioId) {
+    public function procesarOpcion($opcion,$status,$id) {
         $ctrlJuego = new CtrlJuego();
         $ctrlAdmin = new CtrlAdmin();
         switch ($opcion) {
@@ -22,8 +22,26 @@ class ServiceAdmin {
                 break;
              case 'estatus':
                 $ctrlAdmin = new CtrlAdmin();
-                $resultado = $ctrlAdmin->actualizaEstausDesafio($desafioId, $status);
+                $resultado = $ctrlAdmin->actualizaEstausDesafio($id, $status);
             
+                // Prepara la respuesta en formato JSON
+                $response = array();
+                if ($resultado) {
+                    // Respuesta exitosa
+                    $response['success'] = true;
+                } else {
+                    // Error al insertar el desafío
+                    $response['success'] = false;
+                }
+            
+                // Devuelve la respuesta en formato JSON
+                header('Content-Type: application/json');
+                echo json_encode($response);
+                break;
+            case 'actualizaJugador':
+                $ctrlAdmin = new CtrlAdmin();
+                $resultado = $ctrlAdmin->actualizaEstausJugador($id, $status);
+                echo $status;
                 // Prepara la respuesta en formato JSON
                 $response = array();
                 if ($resultado) {
@@ -67,7 +85,7 @@ class ServiceAdmin {
 // Crear una instancia de la clase y llamar al método procesarOpcion con el parámetro deseado
 $serviceAdmin = new ServiceAdmin();
 if ($_SERVER["REQUEST_METHOD"] == "GET") {
-    $desafioId=0;
+    $id=0;
     $estatus='';
     $opcionGet = $_GET['opcion']; // Obtener el valor de la opción desde el parámetro GET
 
@@ -78,23 +96,68 @@ if ($_SERVER["REQUEST_METHOD"] == "GET") {
     } 
 
     // Verificar si el parámetro "desafioID" está presente y no está vacío
-    if (isset($_GET['desafioID']) && !empty($_GET['desafioID'])) {
-        $desafioId = $_GET['desafioID'];
+    if (isset($_GET['id']) && !empty($_GET['id'])) {
+        $id = $_GET['id'];
         
     } 
-    $serviceAdmin->procesarOpcion($opcionGet,$estatus,$desafioId);
+    $serviceAdmin->procesarOpcion($opcionGet,$estatus,$id);
 }
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recupera los valores enviados por POST
-    $nivel_id = $_POST['nivel_id'];
-    $usuario_id = $_POST['usuario_id'];
-    $desafio_desc = $_POST['desafio_desc'];
-    $tiempo_segundos = $_POST['tiempo_segundos'];
-    $status = $_POST['status'];
-    $opcionPost = $_POST['opcion']; 
-    $desafioId = $_POST['desafio_id']; 
+    // Verificar si 'nivel_id' está definido y no es nulo
+    if (isset($_POST['nivel_id'])) {
+        $nivel_id = $_POST['nivel_id'];
+    }
+
+    // Verificar si 'usuario_id' está definido y no es nulo
+    if (isset($_POST['usuario_id'])) {
+        $usuario_id = $_POST['usuario_id'];
+    }
+
+    // Verificar si 'desafio_desc' está definido y no es nulo
+    if (isset($_POST['desafio_desc'])) {
+        $desafio_desc = $_POST['desafio_desc'];
+    }
+
+    // Verificar si 'tiempo_segundos' está definido y no es nulo
+    if (isset($_POST['tiempo_segundos'])) {
+        $tiempo_segundos = $_POST['tiempo_segundos'];
+    }
+
+    // Verificar si 'status' está definido y no es nulo
+    if (isset($_POST['status'])) {
+        $status = $_POST['status'];
+    }
+
+    // Verificar si 'opcion' está definido y no es nulo
+    if (isset($_POST['opcion'])) {
+        $opcionPost = $_POST['opcion'];
+    }
+
+    // Verificar si 'desafio_id' está definido y no es nulo
+    if (isset($_POST['desafio_id'])) {
+        $desafioId = $_POST['desafio_id'];
+    } 
+
+    if (isset($_POST['usuario_id'])) {
+        $usuario_id = $_POST['usuario_id'];
+    }
+
+    if (isset($_POST['jugador_nombre'])) {
+        $jugador_nombre = $_POST['jugador_nombre'];
+    }
+
+    if (isset($_POST['jugador_sexo'])) {
+        $jugador_sexo = $_POST['jugador_sexo'];
+    } 
+    if (isset($_POST['estatus_jugador'])) {
+        $estatus_jugador = $_POST['estatus_jugador'];
+    } 
+    if (isset($_POST['jugador_id'])) {
+        $jugador_id = $_POST['jugador_id'];
+    } 
     switch ($opcionPost) {
         case 'save':
             $ctrlAdmin = new CtrlAdmin();
@@ -132,10 +195,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header('Content-Type: application/json');
             echo json_encode($response);
             break;
+        case 'insertaJugador':
+            $ctrlAdmin = new CtrlAdmin();
+            $resultado = $ctrlAdmin->insertarJugador($usuario_id, $jugador_nombre, $jugador_sexo, $estatus_jugador);
+            
+            // Prepara la respuesta en formato JSON
+            $response = array();
+            if ($resultado) {
+                // Respuesta exitosa
+                $response['success'] = true;
+            } else {
+                // Error al insertar el desafío
+                $response['success'] = false;
+            }
+        
+            // Devuelve la respuesta en formato JSON
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            break;
+         case 'editaJugador':
+            $ctrlAdmin = new CtrlAdmin();
+            $resultado = $ctrlAdmin->actualizarJugador($jugador_id, $jugador_nombre, $jugador_sexo);
+            
+            // Prepara la respuesta en formato JSON
+            $response = array();
+            if ($resultado) {
+                // Respuesta exitosa
+                $response['success'] = true;
+            } else {
+                // Error al insertar el desafío
+                $response['success'] = false;
+            }
+        
+            // Devuelve la respuesta en formato JSON
+            header('Content-Type: application/json');
+            echo json_encode($response);
+            break;
         default:
             echo "Opcion invalida";
             break;
+        
     }
     // Llama a la función insertarDesafio con los parámetros recibidos
-    
+
 }
