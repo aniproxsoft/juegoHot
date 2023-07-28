@@ -1,3 +1,18 @@
+<?php
+    include '../php/service/DTO/UsuarioDTO.php';
+    session_start();
+    // error_reporting(0);
+    $sesion  = $_SESSION['usuario'];
+    $usuario = unserialize($sesion);
+    if (!isset($sesion)) {
+        header("Location:../index.php");
+        die();
+    }else if(isset($sesion)){
+        if(!($usuario->getTipoUsuario()->getNombreRol()=='Administrador')){
+            header("Location:accesoDenegado.html");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -52,7 +67,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" style="margin-left: 5px;" href="#">JuegoHot</a>
+            <a class="navbar-brand" style="margin-left: 5px;" href="adminJugar.php">JuegoHot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -60,17 +75,21 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="adminJugar.php">Jugar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca</a>
+                        <a class="nav-link" href="adminJugadores.php">Jugadores</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                        <a class="nav-link" href="adminNiveles.php">Niveles</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="adminJuegos.php">Desafios</a>
                     </li>
+                    <li class="nav-item float-end">
+                        <a class="nav-link" href="../php/service/CtrlLogout.php">salir</a>
+                    </li>
+                    
                 </ul>
             </div>
         </div>
@@ -138,7 +157,7 @@
         // Función para agregar un nuevo nivel
         function agregarNivel() {
             // Redireccionar a la página para agregar un nuevo nivel...
-            window.location.href = 'guardarNivel.html?opc=agregaNivel';
+            window.location.href = 'guardarNivel.php?opc=agregaNivel';
         }
         // Función para cargar los niveles filtrados por AJAX
         function cargarNiveles() {
@@ -258,7 +277,7 @@
         function editarNivel(nivelId, nombre, descripcion, adicional, numDesafio) {
             // Redireccionar a la página de edición del nivel con el ID correspondiente
 
-            window.location.href = 'guardarNivel.html?opc=editaNivel&nivelNombre=' + nombre + '&nivelDesc=' + descripcion + '&numeroDesafios=' + numDesafio + '&adicional=' + adicional + '&nivelId=' + encriptar(nivelId);
+            window.location.href = 'guardarNivel.php?opc=editaNivel&nivelNombre=' + nombre + '&nivelDesc=' + descripcion + '&numeroDesafios=' + numDesafio + '&adicional=' + adicional + '&nivelId=' + encriptar(nivelId);
         }
 
         // Función para mostrar el alert

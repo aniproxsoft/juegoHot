@@ -1,27 +1,26 @@
 <?php
+
 	header("Cache-Control: no-cache");
 	require_once "ClassConnection.php";
-	require_once "./php/service/DTO/UsuarioDTO.php";
-    require_once "./php/service/DTO/TipoUsuarioDTO.php";
-
-Class CtrlLogin{
-	public function login($email , $password){
+	require_once "./DTO/UsuarioDTO.php";
+    require_once "./DTO/TipoUsuarioDTO.php";
+	if(isset($_POST['pass'])){
+		$password=$_POST['pass'];
+	}
+	if(isset($_POST['usuario'])){
+		$user=$_POST['usuario'];
+	}
+	
 		$db       = new connectionDB();
 		$conexion = $db->get_connection();
 		
 		//$conexion->exec("set names utf8");
 		//error_reporting(0);
-
-		
-		
-		
-
-	
 		try {
 			$usuario = new UsuarioDTO();
 			$tipoUsuario=new TipoUsuarioDTO();
 			$statement = $conexion->prepare("CALL sp_autentifica(?,?)");
-			$statement->bindParam(1,$email);
+			$statement->bindParam(1,$user);
 			$statement->bindParam(2,$password);
 			$statement->execute();
 
@@ -47,27 +46,24 @@ Class CtrlLogin{
 			$db = null;
 			$conexion=null;
 
-			return $usuario;
-
 		}catch(PDOException $e){
 			echo 'Error al conectar con la base de datos: ' . $e->getMessage();
 		}
 
 
-		/*if ($usuario->getFlag() == 1 and $usuario->getTipoUsuario()->getNombreRol()=='Administrador') {
+		if ($usuario->getFlag() == 1 and $usuario->getTipoUsuario()->getNombreRol()=='Administrador') {
 			session_start();
 			$_SESSION['usuario'] = serialize($usuario);
 			echo 'Login true admin';
-			//header("Location:../../vistas/adm/reportes.php");
+			header("Location:../../vistas/adminJugar.php");
 		} else if($usuario->getFlag() == 1 and $usuario->getTipoUsuario()->getNombreRol()=='Usuario'){
-			date_default_timezone_set('America/Mexico_City');
+			session_start();
+			$_SESSION['usuario'] = serialize($usuario);
 			echo 'Login true user';
-			//header("Location:../../vistas/recepcionista/checkin.php");
+			header("Location:../../vistas/userJugar.php");
 		}else {
 			
-			echo '<script type="text/javascript">alert("Error, contraseña y/o usuario incorrecto");location.href="../../index.html";</script>';
-		}*/
-	}
-}
-?>
+			echo '<script type="text/javascript">alert("Error, contraseña y/o usuario incorrecto"); location.href = "../../index.php";</script>';
+		}
 
+?>

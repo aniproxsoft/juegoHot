@@ -1,3 +1,18 @@
+<?php
+    include '../php/service/DTO/UsuarioDTO.php';
+    session_start();
+    // error_reporting(0);
+    $sesion  = $_SESSION['usuario'];
+    $usuario = unserialize($sesion);
+    if (!isset($sesion)) {
+        header("Location:../index.php");
+        die();
+    }else if(isset($sesion)){
+        if(!($usuario->getTipoUsuario()->getNombreRol()=='Administrador')){
+            header("Location:accesoDenegado.html");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -46,7 +61,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">JuegoHot</a>
+            <a class="navbar-brand" style="margin-left: 5px;" href="adminJugar.php">JuegoHot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -54,17 +69,21 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="adminJugar.php">Jugar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca</a>
+                        <a class="nav-link" href="adminJugadores.php">Jugadores</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                        <a class="nav-link" href="adminNiveles.php">Niveles</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="adminJuegos.php">Desafios</a>
                     </li>
+                    <li class="nav-item float-end">
+                        <a class="nav-link" href="../php/service/CtrlLogout.php">salir</a>
+                    </li>
+                    
                 </ul>
             </div>
         </div>
@@ -91,11 +110,9 @@
                             <option value="">Seleccionar nivel</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label class="h2" for="usuario_id">Usuario ID:</label>
-                        <input type="text" class="form-control form-control-lg" id="usuario_id" name="usuario_id"
-                            value="1" disabled required>
-                    </div>
+                   
+                    
+                    
                     <div class="form-group">
                         <label class="h2" for="desafio_desc">Descripcion:</label>
                         <textarea class="form-control form-control-lg" id="desafio_desc" name="desafio_desc" required
@@ -129,7 +146,8 @@
 
                 </form>
                 <input id="desafioId" type="hidden" value="">
-
+                <input type="hidden" class="form-control form-control-lg" id="usuario_id" name="usuario_id"
+                value="<?php echo $usuario->getUsuarioId()?>" disabled >
 
             </div>
         </div>
@@ -138,10 +156,11 @@
     <script>
         $(document).ready(function () {
             var jugadorSeleccionado;
+            var usuario_id= $('#usuario_id').val();
             $.ajax({
                 url: '../php/service/ServiceAdmin.php?opcion=jug', // Reemplaza 'ruta_a_tu_archivo_php.php' con la ruta correcta a tu archivo PHP
                 type: 'get',
-                data: { user: 1 }, // Puedes cambiar el valor de 'user' según tus necesidades
+                data: { user: usuario_id }, // Puedes cambiar el valor de 'user' según tus necesidades
                 dataType: 'json',
                 success: function (data) {
                     if (data.length === 0) {
@@ -396,7 +415,7 @@
                             const respuesta = JSON.parse(resultadoSinSaltosDeLinea);;
                             console.log(respuesta);
                             // Respuesta exitosa
-                           // if (response.success) {
+                            //if (response.success) {
                             if (respuesta.success) {
                                 // Muestra la alerta de éxito y oculta la alerta de error
                                 $("#alertSuccess").removeClass("d-none");
@@ -407,8 +426,8 @@
                                 });
                                 // Redirige al usuario al index después de 2 segundos
                                 setTimeout(function () {
-                                    window.location.href = "adminJuegos.html";
-                                }, 2000);
+                                    window.location.href = "adminJuegos.php";
+                                }, 800);
                             } else {
                                 // Muestra la alerta de error y oculta la alerta de éxito
                                 $("#alertError").removeClass("d-none");
@@ -486,6 +505,7 @@
                 console.log('Nivel ID:', nivelId);
                 $("#nivel_id").val(nivelId);
             }
+            
 
             if (status !== null) {
                 console.log('Status:', status);

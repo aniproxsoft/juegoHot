@@ -2,8 +2,8 @@
   require_once 'CtrlAdmin.php';
 
   $ctrlAdmin = new CtrlAdmin();
- 
-  $jsonDesafios = $ctrlAdmin->getDesafios(1);
+  $user = $_GET['user'];
+  $jsonDesafios = $ctrlAdmin->getDesafios($user);
   
   $jsonResponse=json_encode($jsonDesafios);
   echo $jsonResponse;

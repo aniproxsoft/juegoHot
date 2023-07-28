@@ -1,13 +1,3 @@
-<?php
-
-  
-    require_once './php/service/CtrlLogin.php';
-    $ctrlLogin = new CtrlLogin();
-    
-    $usuario = $ctrlLogin->login('aniproxtoartmusic@gmail.com','hotGame132*');
-    //echo $usuario->toString();
-   
-?>
 <!DOCTYPE html>
 <html>
 
@@ -29,7 +19,7 @@
             background-color: purple;
         }
 
-        
+
         body {
             background-color: #F2D5F8;
             /* Cambiar el color de fondo aquí */
@@ -41,32 +31,41 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" style="margin-left: 5px;" href="#">JuegoHot</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
     <div id="contenedor" class="d-flex justify-content-center align-items-center " style="min-height: 100vh;">
-        
-        <a class="btn btn-purple"href="vistas/juego.html">Jugar</a>
-    </div>
+        <div class="container-fluid fullscreen">
+            <div class="card  fondoCard">
+                <div id="cardLogin" class="card-body ">
+                    <form id="iniciarSesion" method="post" action="./php/service/CtrlLogin.php">
+                        <div class="form-group">
+                            <label class="h2" for="usuario">Usuario/email:</label>
+                            <input type="text" name="usuario" id="usuario" class="form-control form-control-lg" minlength="8" maxlength="50" required  />
+                            <div class="invalid-feedback h1">
+                                <h2> El usuario debe tener entre 3 y 50 caracteres sin acentos o caracteres especiales.
+                                </h2>
+                            </div>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label class="h2" for="pass">Password:</label>
+                            <input type="password" id="pass" name="pass" class="form-control form-control-lg" minlength="8" maxlength="50" required />
+                            <div class="invalid-feedback h1">
+                                <h2> El password debe tener entre 3 y 50 caracteres sin acentos o caracteres especiales.
+                                </h2>
+                            </div>
+                        </div>
 
-    </body>
+
+                        <br /><br /><br />
+                        <button type="submit" class="btn btn-purple float-end h1 btn-lg custom-btn">Aceptar</button>
+
+
+                    </form>
+
+                </div>
+            </div>
+
+
+</body>

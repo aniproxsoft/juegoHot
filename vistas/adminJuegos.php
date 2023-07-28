@@ -1,3 +1,18 @@
+<?php
+    include '../php/service/DTO/UsuarioDTO.php';
+    session_start();
+    // error_reporting(0);
+    $sesion  = $_SESSION['usuario'];
+    $usuario = unserialize($sesion);
+    if (!isset($sesion)) {
+        header("Location:../index.php");
+        die();
+    }else if(isset($sesion)){
+        if(!($usuario->getTipoUsuario()->getNombreRol()=='Administrador')){
+            header("Location:accesoDenegado.html");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -61,7 +76,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" style="margin-left: 5px;" href="#">JuegoHot</a>
+            <a class="navbar-brand" style="margin-left: 5px;" href="adminJugar.php">JuegoHot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -69,17 +84,22 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="adminJugar.php">Jugar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca</a>
+                        <a class="nav-link" href="adminJugadores.php">Jugadores</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                        <a class="nav-link" href="adminNiveles.php">Niveles</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="adminJuegos.php">Desafios</a>
                     </li>
+                    
+                    <div class="nav-item float-end">
+                        <a class="nav-link" href="../php/service/CtrlLogout.php">salir</a>
+                    </div>
+                    
                 </ul>
             </div>
         </div>
@@ -116,7 +136,7 @@
     </nav>
 
     <a class="floating-button" onclick="scrollToTop()"><i class="fas fa-chevron-up"></i></a>
-    <a href="guardarDesafio.html?opc=save" class="floating-button"><i class="fas fa-plus"></i></a>
+    <a href="guardarDesafio.php?opc=save" class="floating-button"><i class="fas fa-plus"></i></a>
 
     <div id="alertContainer" style="margin-top: 20px;" class="h2"></div>
     <div class="container-fluid fullscreen">
@@ -134,7 +154,8 @@
     <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
     <script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+    <input type="hidden" class="form-control form-control-lg" id="usuario_id" name="usuario_id"
+                value="<?php echo $usuario->getUsuarioId()?>" disabled >
 </body>
 <script>
     $(document).ready(function () {
@@ -157,9 +178,14 @@
             var componentesHtml = '<div class="list-group-item list-group-item-action  btn-purple">' +
                 '<h1>Desafios</h1>' +
                 '</div>';
+            var usuario_id= $('#usuario_id').val();
             $.ajax({
                 url: '../php/service/CtrlDesafiosService.php',
                 dataType: 'json',
+                type: 'get',
+                data: {
+                  user:usuario_id                  
+                },
                 success: function (data) {
                     var filteredDesafios = data.filter(function (desafio) {
                         return (nivel === 'all' || desafio.nivel_id === nivel) &&
@@ -314,7 +340,7 @@
             // Crear un formulario oculto para enviar los parámetros mediante POST
             var form = $('<form>').attr({
                 method: 'get',
-                action: 'guardarDesafio.html'
+                action: 'guardarDesafio.php'
             });
 
             // Agregar los campos ocultos con los parámetros necesarios

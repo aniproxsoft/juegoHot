@@ -1,8 +1,23 @@
+<?php
+    include '../php/service/DTO/UsuarioDTO.php';
+    session_start();
+    // error_reporting(0);
+    $sesion  = $_SESSION['usuario'];
+    $usuario = unserialize($sesion);
+    if (!isset($sesion)) {
+        header("Location:../index.php");
+        die();
+    }else if(isset($sesion)){
+        if(!($usuario->getTipoUsuario()->getNombreRol()=='Administrador')){
+            header("Location:accesoDenegado.html");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html>
 
 <head>
-    <title>Niveles</title>
+    <title>Jugadores</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
@@ -19,12 +34,15 @@
             background-color: purple;
         }
 
+
         body {
             background-color: #F2D5F8;
+            /* Cambiar el color de fondo aquí */
         }
 
         .fondoCard {
             background-color: #e7a9f3;
+            /* Cambiar el color de fondo aquí */
         }
 
         .fullscreen {
@@ -52,7 +70,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" style="margin-left: 5px;" href="#">JuegoHot</a>
+            <a class="navbar-brand" style="margin-left: 5px;" href="adminJugar.php">JuegoHot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -60,76 +78,71 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="adminJugar.php">Jugar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca</a>
+                        <a class="nav-link" href="adminJugadores.php">Jugadores</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                        <a class="nav-link" href="adminNiveles.php">Niveles</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
+                        <a class="nav-link" href="adminJuegos.php">Desafios</a>
                     </li>
+                    <li class="nav-item float-end">
+                        <a class="nav-link" href="../php/service/CtrlLogout.php">salir</a>
+                    </li>
+                    
                 </ul>
             </div>
         </div>
     </nav>
     <div class="alert alert-success d-none" id="alertSuccess">
-        <h2> Nivel Guardado correctamente. </h2>
+        <h2> Jugador Guardado correctamente. </h2>
     </div>
 
     <!-- Alerta de error -->
     <div class="alert alert-danger d-none" id="alertError">
-        <h2> Error al guardar el nivel. Intentalo de nuevo.</h2>
+        <h2> Error al guardar el jugador. Intentalo de nuevo.</h2>
+    </div>
+    <div class="list-group-item list-group-item-action  btn-purple">
+        <h1>Guardar Jugador</h1>
     </div>
 
-
     <div class="container-fluid fullscreen">
-        <div class="list-group-item list-group-item-action  btn-purple">
-            <h1>Guardar Nivel</h1>
-        </div>
         <div class="card  fondoCard">
             <div id="cardNivel" class="card-body ">
-                <form id="guardarNivelForm">
+                <form id="guardarJugadorForm">
                     <div class="form-group">
-                        <label class="h2" for="nivelNombre">Nombre:</label>
-                        <input type="text" id="nivelNombre" class="form-control form-control-lg" required />
+                        <label class="h2" for="nombre">Nombre:</label>
+                        <input type="text" id="nombre" class="form-control form-control-lg" required />
                         <div class="invalid-feedback h1">
                             <h2> El nombre debe tener entre 3 y 50 caracteres sin acentos o caracteres especiales.
                             </h2>
                         </div>
                     </div>
+                    <br>
                     <div class="form-group">
-                        <label class="h2" for="nivelDesc">Descripcion:</label>
-                        <input type="text" id="nivelDesc" class="form-control form-control-lg" required />
-                        <div class="invalid-feedback h1">
-                            <h2> La descripcion debe tener entre 3 y 100 caracteres sin acentos o caracteres
-                                especiales. </h2>
-                        </div>
+                        <label style="margin-left: 20px;" class="h2" for="sexo">Sexo:</label>
+                        <input class=" form-check-input form-control-lg" type="radio" id="sexoM" name="sexo" value="M"
+                            required>
+                        <label style="margin-left: 20px;" class="h2" for="sexoM">Masculino</label>
+                        <input class="form-check-input form-control-lg" type="radio" id="sexoF" name="sexo" value="F"
+                            required>
+                        <label style="margin-left: 20px;" class="h2" for="sexoF">Femenino</label>
                     </div>
-                    <div class="form-group">
-                        <label class="h2" for="adicional">Adicional:</label>
-                        <input type="text" id="adicional" class="form-control form-control-lg" />
-                        <div class="invalid-feedback h1">
-                            <h2> El campo adicional debe tener entre 3 y 100 caracteres sin acentos o caracteres
-                                especiales. </h2>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="h2" for="numeroDesafios">Numero de Desafios:</label>
-                        <input type="number" id="numeroDesafios" class="form-control form-control-lg" required />
-                        <div class="invalid-feedback h1">
-                            <h2> El numero de desafios debe ser un valor numerico entero. </h2>
-                        </div>
-                    </div>
+
 
                     <br /><br /><br />
                     <button type="submit" class="btn btn-purple float-end h1 btn-lg custom-btn">Guardar</button>
+
+
                 </form>
-                <input id="nivel_id" type="hidden" value="">
+                <input id="jugador_id" type="hidden" value="">
 
             </div>
+            <input type="hidden" class="form-control form-control-lg" id="usuario_id" name="usuario_id"
+                value="<?php echo $usuario->getUsuarioId()?>" disabled >
             <script>
                 $(document).ready(function () {
                     const urlParams = new URLSearchParams(window.location.search);
@@ -137,70 +150,56 @@
                     // Obtén el valor del parámetro "opc" si existe
                     const opc = urlParams.get("opc");
                     var opcion = opc;
-                    if (opcion === 'editaNivel') {
+                    if (opcion === 'editaJugador') {
                         const urlParams = new URLSearchParams(window.location.search);
-                        const nivel_id = urlParams.get('nivelId');
-                        const nivelNombre = urlParams.get('nivelNombre');
-                        const nivelDesc = urlParams.get('nivelDesc');
-                        const adicional = urlParams.get('adicional');
-                        const numeroDesafios = urlParams.get('numeroDesafios');
+                        const jugador_id = urlParams.get('jugadorId');
+                        const nombre = urlParams.get('nombre');
+                        const sexo = urlParams.get('sexo');
 
                         // Actualizar los campos del formulario con los valores de la URL
-                        document.getElementById('nivel_id').value = nivel_id;
-                        document.getElementById('nivelNombre').value = nivelNombre;
-                        document.getElementById('nivelDesc').value = nivelDesc;
-                        document.getElementById('adicional').value = adicional;
-                        document.getElementById('numeroDesafios').value = numeroDesafios;
+                        document.getElementById('jugador_id').value = jugador_id;
+                        document.getElementById('nombre').value = nombre;
+
+                        // Verificar el sexo y marcar el radio button correspondiente
+                        if (sexo === 'M') {
+                            document.getElementById('sexoM').checked = true;
+                        } else if (sexo === 'F') {
+                            document.getElementById('sexoF').checked = true;
+                        }
                     }
 
-                    $('#guardarNivelForm').submit(function (e) {
-                        const nivelNombreInput = document.getElementById("nivelNombre");
-                        const nivelDescInput = document.getElementById("nivelDesc");
-                        const adicionalInput = document.getElementById("adicional");
-                        const numeroDesafiosInput = document.getElementById("numeroDesafios");
+                    $('#guardarJugadorForm').submit(function (e) {
+                        const nombreInput = document.getElementById("nombre");
+                        const userInput = document.getElementById("usuario_id");
+                        const nombreValue = nombreInput.value.trim();
+                        const nombrePattern = /^[a-zA-Z0-9 ]{3,50}$/;
 
-                        const nivelNombreValue = nivelNombreInput.value.trim();
-                        const nivelDescValue = nivelDescInput.value.trim();
-                        const adicionalValue = adicionalInput.value.trim();
-                        const numeroDesafiosValue = numeroDesafiosInput.value.trim();
-
-                        const textoPattern = /^[a-zA-Z 0-9.]{3,100}$/;
-                        const textoPatternDos = /^[a-zA-Z0-9 .]*$/;
-
-                        const numeroPattern = /^\d+$/;
-
-                        if (!textoPattern.test(nivelNombreValue)) {
+                        if (!nombrePattern.test(nombreValue)) {
                             event.preventDefault();
-                            nivelNombreInput.classList.add("is-invalid");
-                        } else if (!textoPattern.test(nivelDescValue)) {
-                            event.preventDefault();
-                            nivelDescInput.classList.add("is-invalid");
-                        } else if (!textoPatternDos.test(adicionalValue)) {
-                            event.preventDefault();
-                            adicionalInput.classList.add("is-invalid");
-                        } else if (!numeroPattern.test(numeroDesafiosValue)) {
-                            event.preventDefault();
-                            numeroDesafiosInput.classList.add("is-invalid");
+                            nombreInput.classList.add("is-invalid");
                         } else {
                             e.preventDefault();
                             // Obtener los valores del formulario
-                            var nivelNombre = $('#nivelNombre').val();
-                            var nivelDesc = $('#nivelDesc').val();
-                            var adicional = $('#adicional').val();
-                            var numeroDesafios = $('#numeroDesafios').val();
-                            var nivel_id = $('#nivel_id').val();
+                            var nombre = $('#nombre').val();
+                            var jugador_id = $('#jugador_id').val();
+                            var sexo = $('input[name="sexo"]:checked').val();
+                            const urlParams = new URLSearchParams(window.location.search);
+
+                            // Obtén el valor del parámetro "opc" si existe
+                            const opc = urlParams.get("opc");
+                            var opcion = opc;
+                            var usuario_id = userInput.value;
                             var estatus = 1;
                             // Realizar la petición AJAX
                             $.ajax({
-                                url: '../php/service/ServiceAdmin.php',
+                                url: '../php/service/ServiceAdmin.php', // Reemplaza 'ruta_al_archivo_php.php' por la ruta correcta a tu archivo PHP
                                 type: 'POST',
                                 data: {
-                                    nivel_id: desencriptar(nivel_id),
-                                    nivel_nombre: nivelNombre,
-                                    nivel_desc: nivelDesc,
-                                    adicional: adicional,
-                                    numero_desafios: numeroDesafios,
-                                    estatus_nivel: estatus,
+                                    usuario_id: usuario_id,
+                                    jugador_sexo: sexo,
+                                    jugador_nombre: nombre,
+                                    estatus_jugador: estatus,
+                                    jugador_id: desencriptar(jugador_id),
                                     opcion: opcion
                                 },
                                 success: function (response) {
@@ -220,8 +219,8 @@
                                         });
                                         // Redirige al usuario al index después de 2 segundos
                                         setTimeout(function () {
-                                            window.location.href = "adminNiveles.html";
-                                        }, 2000);
+                                            window.location.href = "adminJugadores.php";
+                                        }, 800);
                                     } else {
                                         // Muestra la alerta de error y oculta la alerta de éxito
                                         $("#alertError").removeClass("d-none");
@@ -232,7 +231,7 @@
                                         });
                                         setTimeout(function () {
                                             $("#alertError").addClass("d-none");
-                                        }, 2000);
+                                        }, 800);
                                     }
                                 },
                                 error: function () {

@@ -7,7 +7,7 @@ Class CtrlAdmin{
         
         $db       = new connectionDB();
         $conexion = $db->get_connection();
-        $user=1;
+        
         // Configuración de la conexión a la base de datos
         $statement = $conexion->prepare("Call obtener_desafios_por_usuario(?)");
 		$statement->bindParam(1,$user);

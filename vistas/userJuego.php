@@ -1,3 +1,18 @@
+<?php
+    include '../php/service/DTO/UsuarioDTO.php';
+    session_start();
+    // error_reporting(0);
+    $sesion  = $_SESSION['usuario'];
+    $usuario = unserialize($sesion);
+    if (!isset($sesion)) {
+        header("Location:../index.php");
+        die();
+    }else if(isset($sesion)){
+        if(!($usuario->getTipoUsuario()->getNombreRol()=='Usuario')){
+            header("Location:accesoDenegado.html");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -54,8 +69,8 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark btn-grande">
-        <div class="container">
-            <a class="navbar-brand" href="#">JuegoHot</a>
+    <div class="container">
+            <a class="navbar-brand" style="margin-left: 5px;" href="userJugar.php">JuegoHot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -63,17 +78,15 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="userJugar.php">Jugar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca</a>
+                        <a class="nav-link" href="userJugadores.php">Jugadores</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                    <li class="nav-item float-end">
+                        <a class="nav-link" href="../php/service/CtrlLogout.php">salir</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
-                    </li>
+                    
                 </ul>
             </div>
         </div>
@@ -91,16 +104,22 @@
     </div>
 
 
-
+    <input type="hidden" class="form-control form-control-lg" id="usuario_id" name="usuario_id"
+                value="<?php echo $usuario->getUsuarioId()?>" disabled >
     <audio id="temporizador">
         <source src="../resources/audio/temporizador.mp3" type="audio/mpeg">
     </audio>
     <script>
         $(document).ready(function () {
             var juego;
+            var usuario_id= $('#usuario_id').val();
             $.ajax({
                 url: "../php/service/CtrlJuegoService.php",
                 dataType: "json",
+                type: 'get',
+                data: {
+                  user:usuario_id                  
+                },
                 success: function (data) {
                     juego = data;
                     var nivelIndex = 0;

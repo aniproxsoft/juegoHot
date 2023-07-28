@@ -6,11 +6,11 @@ require_once "./DTO/JugadorDTO.php";
 require_once "./DTO/NivelDTO.php";
 Class CtrlJuego {
     
-    function getDesafios($nivel) {
+    function getDesafios($nivel,$user) {
         
         $db       = new connectionDB();
         $conexion = $db->get_connection();
-        $user=1;
+        
         // Configuración de la conexión a la base de datos
         $statement = $conexion->prepare("CALL sp_get_desafios(?,?)");
 		$statement->bindParam(1,$nivel);
@@ -46,7 +46,7 @@ Class CtrlJuego {
         
         $db       = new connectionDB();
         $conexion = $db->get_connection();
-        $user=1;
+        
         // Configuración de la conexión a la base de datos
         $statement = $conexion->prepare("CALL  sp_jugadores(?)");
 		$statement->bindParam(1,$user);
@@ -75,7 +75,7 @@ Class CtrlJuego {
         
         $db       = new connectionDB();
         $conexion = $db->get_connection();
-        $user=1;
+        
         // Configuración de la conexión a la base de datos
         $statement = $conexion->prepare("CALL  sp_get_niveles()");
 		
@@ -107,7 +107,7 @@ Class CtrlJuego {
         $niveles = $this->getNiveles();
         
             foreach ($niveles as $nivel) {
-                $desafios = $this->getDesafios($nivel->getNivelId());
+                $desafios = $this->getDesafios($nivel->getNivelId(),$user);
                 if (!empty($desafios)) {
                     $desafiosSeleccionados = array();
                     $asignaciones = array(); // Arreglo de asignaciones

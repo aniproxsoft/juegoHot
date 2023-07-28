@@ -1,3 +1,18 @@
+<?php
+    include '../php/service/DTO/UsuarioDTO.php';
+    session_start();
+    // error_reporting(0);
+    $sesion  = $_SESSION['usuario'];
+    $usuario = unserialize($sesion);
+    if (!isset($sesion)) {
+        header("Location:../index.php");
+        die();
+    }else if(isset($sesion)){
+        if(!($usuario->getTipoUsuario()->getNombreRol()=='Usuario')){
+            header("Location:accesoDenegado.html");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html>
 
@@ -54,8 +69,8 @@
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" style="margin-left: 5px;" href="#">JuegoHot</a>
+    <div class="container">
+            <a class="navbar-brand" style="margin-left: 5px;" href="userJugar.php">JuegoHot</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -63,23 +78,21 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Inicio</a>
+                        <a class="nav-link" href="userJugar.php">Jugar</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Acerca</a>
+                        <a class="nav-link" href="userJugadores.php">Jugadores</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Servicios</a>
+                    <li class="nav-item float-end">
+                        <a class="nav-link" href="../php/service/CtrlLogout.php">salir</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Contacto</a>
-                    </li>
+                    
                 </ul>
             </div>
         </div>
     </nav>
 
-    <a href="guardarJugador.html?opc=insertaJugador" id="botonAgregar" class="floating-button"><i
+    <a href="guardarJugadorUser.php?opc=insertaJugador" id="botonAgregar" class="floating-button"><i
             class="fas fa-plus"></i></a>
     <div id="alertContainer" style="margin-top: 20px;" class="h2"></div>
 
@@ -89,7 +102,8 @@
         <div id="listView" class="list-group">
         </div>
     </div>
-
+    <input type="hidden" class="form-control form-control-lg" id="usuario_id" name="usuario_id"
+                value="<?php echo $usuario->getUsuarioId()?>" disabled >
     <script>
         $(document).ready(function () {
 
@@ -100,11 +114,12 @@
                 var html = '<div class="list-group-item list-group-item-action  btn-purple">' +
                     '<h1>Jugadores</h1>' +
                     '</div>';
+                var usuario_id= $('#usuario_id').val();
                 $.ajax({
                     url: '../php/service/ServiceAdmin.php?opcion=jug', // Reemplaza 'ruta_al_archivo_php.php' por la ruta correcta a tu archivo PHP para obtener los jugadores
                     dataType: 'json',
                     type: 'get',
-                    data: { user: 1 },
+                    data: { user: usuario_id },
                     success: function (data) {
                         listView.empty(); // Limpiar el contenedor antes de mostrar los resultados filtrados
                         if (data.length === 2) {
@@ -114,7 +129,7 @@
                             $("#botonAgregar").hide();
                         } else {
                             $("#botonAgregar").removeClass("disabled");
-                            $("#botonAgregar").attr("href", "guardarJugador.html?opc=insertaJugador");
+                            $("#botonAgregar").attr("href", "guardarJugadorUser.php?opc=insertaJugador");
                             $("#botonAgregar").show();
                         }
                         $.each(data, function (index, jugador) {
@@ -156,11 +171,12 @@
             var html = '<div class="list-group-item list-group-item-action  btn-purple">' +
                 '<h1>Jugadores</h1>' +
                 '</div>';
+            var usuario_id= $('#usuario_id').val();
             $.ajax({
                 url: '../php/service/ServiceAdmin.php?opcion=jug', // Reemplaza 'ruta_al_archivo_php.php' por la ruta correcta a tu archivo PHP para obtener los jugadores
                 dataType: 'json',
                 type: 'get',
-                data: { user: 1 },
+                data: { user: usuario_id },
                 success: function (data) {
                     listView.empty(); // Limpiar el contenedor antes de mostrar los resultados filtrados
                     if (data.length === 2) {
@@ -170,7 +186,7 @@
                         $("#botonAgregar").hide();
                     } else {
                         $("#botonAgregar").removeClass("disabled");
-                        $("#botonAgregar").attr("href", "guardarJugador.html?opc=insertaJugador");
+                        $("#botonAgregar").attr("href", "guardarJugadorUser.php?opc=insertaJugador");
                         $("#botonAgregar").show();
                     }
                     $.each(data, function (index, jugador) {
@@ -233,7 +249,7 @@
         // Función para editar un jugador
         function editarJugador(jugadorId, nombre, sexo) {
             // Redireccionar a la página de edición del jugador con el ID correspondiente
-            window.location.href = 'guardarJugador.html?opc=editaJugador&nombre=' + nombre + '&sexo=' + sexo + '&jugadorId=' + encriptar(jugadorId);
+            window.location.href = 'guardarJugadorUser.php?opc=editaJugador&nombre=' + nombre + '&sexo=' + sexo + '&jugadorId=' + encriptar(jugadorId);
         }
         function encriptar(id) {
             // Utilizar el cifrado Base64 para encriptar el ID
