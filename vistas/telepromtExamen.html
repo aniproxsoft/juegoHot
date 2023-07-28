@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Teleprompter de Preguntas y Respuestas</title>
+    <!-- Agregar referencia a Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        #container {
+            max-width: 800px;
+            padding: 20px;
+            border: 2px solid #ccc;
+            background-color: #f9f9f9;
+        }
+
+        h1 {
+            margin: 0;
+            padding: 20px;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        h1,
+        h2 {
+            font-size: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <h1 id="question"></h1>
+        <h2 id="respuesta"></h2>
+    </div>
+
+    <script>
+        const questionsAndAnswers = [
+            {
+                "question": "1. ¿Este principio se enfoca en asegurarse que la superficie de ataque no es incrementada con componentes de software, código o funcionalidad, para evitar introducir nuevas vulnerabilidades. ¿De qué principio estamos hablando?",
+                "answer": "Economía de mecanismos"
+            },
+            {
+                "question": "2. ¿Qué metodología de modelado de amenazas se realiza en la fase de diseño del desarrollo de software agrupando y clasificando las amenazas en seis categorías?",
+                "answer": "STRIDE"
+            },
+            {
+                "question": "3. ¿Cómo se denomina al proceso de transformación de los datos que proporciona el usuario antes de procesarlos?",
+                "answer": "Sanitización"
+            },
+            {
+                "question": "4. ¿Cuál de las siguientes es la política de seguridad aplicable de forma universal para toda la organización?",
+                "answer": "Políticas organizacionales"
+            },
+            {
+                "question": "5. ¿Qué tipo de análisis de código implica la inspección del mismo sin ejecutar el programa de software que lo contiene?",
+                "answer": "Análisis de código estático"
+            },
+            {
+                "question": "6. ¿Qué categoría del modelo STRIDE habla acerca de la interrupción del servicio que afecta la disponibilidad?",
+                "answer": "Denegación de Servicio"
+            },
+            {
+                "question": "7. Complete la siguiente oración: Los _______, ayudan a identificar los requisitos de seguridad al modelar escenarios negativos.",
+                "answer": "Casos de Abuso"
+            },
+            {
+                "question": "8. Almacenar la clave Criptográfica junto con los datos que se están respaldando es un ejemplo de vulnerabilidad criptográfica",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "9. El administrador de la base de datos con acceso sin restricciones y sin auditar la información confidencial directamente es una fuente de amenaza potencial que no debe ignorarse. ¿A qué tipo de agente de amenaza humana corresponde la descripción anterior?",
+                "answer": "Usuario ignorante"
+            },
+            {
+                "question": "10. El objetivo de la recolección de basura es reducir las pérdidas de memoria, es decir, recuperar objetos de memoria inalcanzables. Verdadero",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "11. ¿Cuál de los siguientes elementos permite verificar la integridad de la información?",
+                "answer": "Firmas digitales"
+            },
+            {
+                "question": "12. “Un agente intencionalmente causa que una amenaza suceda”, ¿Qué concepto describe el enunciado anterior?",
+                "answer": "Ataque"
+            },
+            {
+                "question": "13. ¿Qué tipo de datos es la información almacenada en base de datos No relacionales?",
+                "answer": "No Estructurados"
+            },
+            {
+                "question": "14. “No confiar en -Seguridad mediante obscuridad-”, ¿A cuál principio de seguridad se refiere el enunciado anterior?",
+                "answer": "Diseño Abierto"
+            },
+            {
+                "question": "15. ¿Qué técnica de sanitización reemplaza las entradas proporcionadas por el usuario con alternativas más seguras?",
+                "answer": "Sustitución"
+            },
+            {
+                "question": "16. Complete la siguiente oración: Las metodologías de _____ se basan en el desarrollo iterativo con el objetivo de minimizar la tasa de fallos del proyecto de desarrollo de software.",
+                "answer": "Desarrollo Ágil"
+            },
+            {
+                "question": "17. Insuficiente protección de datos en movimiento, insuficiente protección de datos en reposo, Ingeniería social electrónica, ¿Son algunas de los motivos principales para qué tipo de vulnerabilidad?",
+                "answer": "Sensitive Data Exposure."
+            },
+            {
+                "question": "18. Se realiza cuando la aplicación funciona desde el navegador web, a través de estos comandos se busca infectar con código malicioso el computador desde el cual el usuario busca conectarse. La mayoría de este tipo de ataques se centran en enviar al usuario a sitios maliciosos y el robo de la información ¿Cómo se denomina este tipo de ataques?",
+                "answer": "Cross-Site Scripting"
+            },
+            {
+                "question": "19. Una de las consideraciones de diseño más importantes es diseñar el software para que pueda proporcionar evidencia histórica de las acciones del usuario y del sistema. ¿A qué concepto hace referencia el enunciado anterior?",
+                "answer": "Auditoría"
+            },
+            {
+                "question": "20. ¿Qué tipo de requerimientos sirven para garantizar que no haya interrupciones en las operaciones de negocio?",
+                "answer": "Disponibilidad"
+            },
+            {
+                "question": "21. ¿Cuáles son los requerimientos que abordan la garantía de fiabilidad y protección o prevención contra modificaciones no autorizadas?",
+                "answer": "Requerimientos de integridad"
+            },
+            {
+                "question": "22. Una carpeta con un catálogo de imágenes, es un ejemplo de datos:",
+                "answer": "No Estructurados"
+            },
+            {
+                "question": "23. Cuando hablamos acerca de agentes de amenaza humanos, ¿cómo se denomina al agente que es un usuario común que tropieza con un error funcional en el software y que puede obtener acceso privilegiado a la información o la funcionalidad?",
+                "answer": "Descubridor accidental"
+            },
+            {
+                "question": "24. ¿Qué tipo de malware actúa imponiendo restricciones a la víctima que infecta y exige que se pague un rescate para eliminar la restricción?",
+                "answer": "Ransomware"
+            },
+            {
+                "question": "25. ¿Cuál de los siguientes proporciona el punto de vista de los usuarios hostiles?",
+                "answer": "Casos de Abuso"
+            },
+            {
+                "question": "26. ¿Cómo se denomina la práctica de estafa en la que se instala código malicioso en un sistema o servidor que dirige a los usuarios a sitios web fraudulentos sin el conocimiento o consentimiento del usuario?",
+                "answer": "Pharming"
+            },
+            {
+                "question": "27. El hecho de que el código se compile sin ningún error, que pueda analizarse mediante el análisis de código estático, significa que se ejecutará sin ningún error.",
+                "answer": "Falso"
+            },
+            {
+                "question": "28. ¿Qué tipo de arquitectura permite la creación de sistemas de información altamente escalables que reflejan el negocio de la organización, y a su vez brinda una forma bien definida de exposición e invocación de servicios, facilitando la interacción entre diferentes sistemas propios o de terceros?",
+                "answer": "SOA"
+            },
+            {
+                "question": "29. ¿Cómo se denomina a la técnica de mitigación de vulnerabilidad que consiste en eliminar todos los servicios y procesos innecesarios?",
+                "answer": "Security Misconfiguration"
+            },
+            {
+                "question": "30. La validación de entrada es el proceso de verificación que garantiza que los datos que se proporcionan para el procesamiento sean del tipo y formato correctos.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "31. El control de versiones del software no solo garantiza que el equipo de desarrollo esté trabajando con la versión correcta del código, sino que también brinda la capacidad de retroceder a una versión anterior en caso que sea necesario.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "32. Complete la siguiente oración: La _______ de un software o aplicación es la medida de su exposición a ser explotada por un agente de amenaza.",
+                "answer": "superficie de ataque"
+            },
+            {
+                "question": "33. ¿Cuáles de los siguientes es un ejemplo de fuente interna para definir requerimientos de seguridad?",
+                "answer": "Políticas de seguridad"
+            },
+            {
+                "question": "34. Los mensajes de error son una de las primeras fuentes que un atacante buscará para determinar la información sobre el software.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "35. Los analizadores de código fuente utilizan predominantemente la comparación de patrones con una lista conocida de sintaxis de vulnerabilidades y análisis de flujo / modelo de datos contra conjuntos de datos conocidos para detectar vulnerabilidades.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "36. Todos los datos necesitan el mismo nivel de protección; por ejemplo, los datos públicos requieren una protección mínima o nula contra la divulgación.",
+                "answer": "Falso"
+            },
+            {
+                "question": "37. ¿Cuál de los siguientes factores no forma parte del denominado triángulo de hierro, en la administración de proyectos de desarrollo de software?",
+                "answer": "Seguridad"
+            },
+            {
+                "question": "38. ¿Cuál de las siguientes es una de las técnicas anti-manipulación para asegurar la integridad y la protección contra alteraciones no autorizadas y maliciosas del código del software y/o los datos?",
+                "answer": "Firmado de código"
+            },
+            {
+                "question": "39. Complete la siguiente oración: La metodología _____ sirve para clasificar el riesgo de la amenaza calculando el promedio de los valores numéricos asignados a las categorías de clasificación de riesgo?",
+                "answer": "DREAD"
+            },
+            {
+                "question": "40. Una llave Criptográfica debe mantenerse en secreto y se conoce como la _________, mientras que la otra clave se divulga a cualquier persona.",
+                "answer": "Llave privada"
+            },
+            {
+                "question": "41. ¿Cuáles de los siguientes son ejemplos de fuentes internas para la definición de requerimientos de seguridad?",
+                "answer": "Políticas, estándares internos, patrones y prácticas."
+            },
+            {
+                "question": "42. Cuando hablamos acerca de agentes de amenaza humanos, ¿cómo se denomina al agente que es un usuario común que ejecuta scripts de hackers contra activos corporativos sin comprender el impacto y las consecuencias de sus acciones?",
+                "answer": "Script Kiddies"
+            },
+            {
+                "question": "43. Las políticas de seguridad deben ser evaluadas periódicamente para que se mantengan correctas y relevantes al contexto y actualizadas conforme a las amenazas actuales.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "44. ¿Cuál de los siguientes principios de seguridad nos indica que no se deben permitir violaciones a la seguridad en caso de una falla?",
+                "answer": "Fallo Seguro"
+            },
+            {
+                "question": "45. Los _______ son bytes aleatorios que se pueden usar con la función hash para evitar colisiones y prevenir ataques de diccionario preconstruidos.",
+                "answer": "Salt Values"
+            },
+            {
+                "question": "46. El dueño del negocio también se conoce como el dueño de los datos.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "47. ¿Qué tipo de técnica implementa filtros que se usan para validar la forma canónica o estándar de una entrada?",
+                "answer": "Expresiones regulares"
+            },
+            {
+                "question": "48. ¿Qué categoría del modelo DREAD clasifica el esfuerzo necesario para manifestar la amenaza y las condiciones previas, si las hay, que son necesarias para materializar la amenaza?",
+                "answer": "Explotabilidad"
+            },
+            {
+                "question": "49. ¿Qué técnica se utiliza para detectar problemas semánticos, como la lógica empresarial y las fallas de diseño?",
+                "answer": "Revisiones de código"
+            },
+            {
+                "question": "50. ¿Qué tipo de análisis efectúa la inspección del código cuando se está ejecutando?",
+                "answer": "Análisis de código dinámico"
+            },
+            {
+                "question": "51. Complete la siguiente oración: La _______________ de código utiliza una variedad de técnicas para hacer que el código fuente sea confuso e ilegible.",
+                "answer": "Ofuscación"
+            },
+            {
+                "question": "52. El control de versiones puede reducir la incidencia de una condición conocida como ______, donde los errores previamente corregidos reaparecen (se regeneran).",
+                "answer": "Errores regenerativos"
+            },
+            {
+                "question": "53. ¿Cuándo faltan actualizaciones de software y de sistema operativo, qué tipo de vulnerabilidad es?",
+                "answer": "Security Misconfiguration"
+            },
+            {
+                "question": "54. ¿Qué práctica proporciona al equipo de desarrollo de software un punto de vista del atacante o del usuario hostil?",
+                "answer": "Modelado de Amenazas"
+            },
+            {
+                "question": "55. ¿En una CPU cómo se llaman los espacios de almacenamiento de memoria interna especializados dentro del propio procesador?",
+                "answer": "Registros"
+            },
+            {
+                "question": "56. ¿Cómo se denomina al mecanismo de seguridad que evita que el software que se ejecuta en un sistema acceda al sistema operativo host?",
+                "answer": "Sandboxing"
+            },
+            {
+                "question": "57. Complete la siguiente oración: Las ____ hacen que la funcionalidad interna de una función de software sea accesible para las personas externas (otras entidades y funciones de código).",
+                "answer": "Interfaces de usuario"
+            },
+            {
+                "question": "58. ¿Cuáles son las responsabilidades del custodio de datos? Realizar copias de seguridad y recuperación según lo especificado por el propietario de datos.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "59. ¿Cómo se denomina a malhechores altamente calificados que se les paga profesionalmente para usar sus habilidades para frustrar la protección de seguridad de software y sistemas, buscando una alta ganancia financiera?",
+                "answer": "Cibercriminales organizados"
+            },
+            {
+                "question": "60. A qué principio de seguridad corresponde que los derechos de acceso sean validados cada vez que ocurre un acceso?",
+                "answer": "Mediación completa"
+            }, {
+                "question": "61. ¿Cómo se denomina al proceso de conversión de datos que tiene más de una representación posible para ajustarse a una forma estándar?",
+                "answer": "Canonicalización"
+            },
+            {
+                "question": "62. ¿Qué categoría del modelo DREAD clasifica lo fácil que es para los investigadores externos y atacantes descubrir la amenaza?",
+                "answer": "Reproducibilidad"
+            },
+            {
+                "question": "63. Complete la siguiente oración: La _______ se puede realizar alterando el orden de las instrucciones de ejecución del programa, cambiando el gráfico de control mediante la inserción de instrucciones de salto arbitrarias.",
+                "answer": "Ofuscación de flujo de código"
+            },
+            {
+                "question": "64. ¿Qué tipo de malware permanece oculto (en modo sigiloso) y opera subrepticiamente, a menudo sin el conocimiento o el consentimiento del sistema o usuario victimizado?",
+                "answer": "Ninguna de las anteriores"
+            },
+            {
+                "question": "65. ¿Qué tipo de arquitectura se basa en servicios de los que cada uno se ejecuta en su propio proceso y se comunica con mecanismos ligeros, a menudo una API de recursos HTTP?",
+                "answer": "Microservicios"
+            },
+            {
+                "question": "66. La imagen base de contenedor es la más importante por motivos de seguridad, ya que se utiliza como punto de partida desde el que crea imágenes derivadas.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "67. Consiste en agregar recursos adicionales al nodo existente. ¿A qué tipo de escalabilidad hace referencia el enunciado anterior?",
+                "answer": "Escalabilidad Vertical"
+            },
+            {
+                "question": "68. Todas las excepciones deben ser manejadas explícitamente.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "69. ¿Qué vulnerabilidad es considerada una de las debilidades de seguridad de software (o aplicación) más frecuentes, y ocurren cuando los datos suministrados por el usuario no se validan antes de que un intérprete los procese?",
+                "answer": "Injection"
+            },
+            {
+                "question": "70. Se recomienda como una mejor práctica redirigir los errores y las excepciones a una ubicación de manejo de errores personalizada y predeterminada y, según el contexto de inicio del usuario (remoto o local), se pueden mostrar los detalles de los mensajes apropiados.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "71. “El balance entre proteger los activos de TI y el costo de implementación de los controles de seguridad de software, de tal forma que el riesgo sea manejado de forma apropiada.” ¿A qué principio se refiere el enunciado anterior?",
+                "answer": "Administración de Riesgos"
+            },
+            {
+                "question": "72. Complete la siguiente oración: La ____________ se logra mediante la implementación de controles de seguridad.",
+                "answer": "Mitigación"
+            },
+            {
+                "question": "73. El uso de algoritmo criptográfico no validado, desarrollado a medida o débil, es un ejemplo de vulnerabilidad Criptográfica.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "74. El software acepta argumentos del usuario que especifica qué comando de programa les gustaría que ejecutara el sistema. ¿De qué tipo de vulnerabilidad estamos hablando?",
+                "answer": "Inyección de Comandos de Sistema Operativo"
+            },
+            {
+                "question": "75. “No compartir recursos cuando no sea necesario.” ¿De qué principio de seguridad estamos hablando?",
+                "answer": "La pieza menos importante"
+            },
+            {
+                "question": "76. ¿Cuáles de los siguientes requerimientos responden a la pregunta de qué se permite o no hacer?",
+                "answer": "Requerimientos de Autorización"
+            },
+            {
+                "question": "77. ¿Qué técnica se utiliza para proteger un software contra ataques de ingeniería inversa?",
+                "answer": "Ofuscación"
+            },
+            {
+                "question": "78. En el contexto del software seguro, la administración de los parámetros de configuración significa que los parámetros que componen el software se gestionan y protegen, para que sean menos propensos a la explotación.",
+                "answer": "Verdadero"
+            },
+            {
+                "question": "79. ¿Qué tipo de análisis de código requiere un entorno simulado que refleje el entorno de producción donde se implementará el código?",
+                "answer": "Análisis de código dinámico"
+            },
+            {
+                "question": "80. ¿Qué técnica se utiliza para detectar bombas lógicas?",
+                "answer": "Revisiones de código"
+            },
+            {
+                "question": "81. ¿Cómo se denomina a la vulnerabilidad en la que un usuario o alguien ajeno a la organización obtiene por diversos medios una contraseña de otro usuario o miembro de la empresa, suplantando su identidad?",
+                "answer": "Broken Authentication"
+            },
+            {
+                "question": "82. La incorporación de características de seguridad da como resultado: un software muy complejo, restrictivo y difícil de utilizar.",
+                "answer": "Falso"
+            },
+            {
+                "question": "83. ¿Cuál es el instrumento a través del cuál se identifican los activos digitales que requieren protección?",
+                "answer": "Agentes de amenazas"
+            }
+        ];
+        const container = document.getElementById("container");
+        const questionElement = document.getElementById("question");
+        const answerElement = document.getElementById("respuesta");
+        let currentIndex = 0;
+
+        function calculateTime(words) {
+            const averageTimePerWord = 468; // Tiempo promedio en milisegundos por palabra
+            return words * averageTimePerWord;
+        }
+
+        function showNextQuestion() {
+            const questionWords = questionsAndAnswers[currentIndex].question.split(' ').length;
+            const answerWords = questionsAndAnswers[currentIndex].answer.split(' ').length;
+            const totalTime = calculateTime(questionWords + answerWords);
+
+            questionElement.innerText = questionsAndAnswers[currentIndex].question;
+            answerElement.innerText = questionsAndAnswers[currentIndex].answer;
+            currentIndex = (currentIndex + 1) % questionsAndAnswers.length;
+            scrollContainer();
+
+            // Actualizar el tiempo del intervalo con el nuevo valor calculado
+            clearInterval(intervalId);
+            intervalId = setInterval(showNextQuestion, totalTime);
+        }
+
+        function scrollContainer() {
+            const scrollAmount = container.scrollHeight - container.clientHeight;
+            if (scrollAmount > 0) {
+                container.scrollTo({
+                    top: scrollAmount,
+                    behavior: "smooth"
+                });
+            }
+        }
+
+        // Iniciar la iteración del teleprompter
+        let intervalId = setInterval(showNextQuestion, 1000); // Cambia el tiempo en milisegundos para ajustar la velocidad de desplazamiento
+    </script>
+</body>
+
+</html>

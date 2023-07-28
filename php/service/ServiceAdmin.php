@@ -217,6 +217,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Devuelve la respuesta en formato JSON
             header('Content-Type: application/json');
             echo json_encode($response);
+            $contenido = ob_get_clean();
+
+
+            $contenido = str_replace(PHP_EOL, '', $contenido);
+            echo $contenido;
             break;
         case 'update':
             $ctrlAdmin = new CtrlAdmin();
@@ -235,6 +240,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Devuelve la respuesta en formato JSON
             header('Content-Type: application/json');
             echo json_encode($response);
+            $contenido = ob_get_clean();
+
+
+            $contenido = str_replace(PHP_EOL, '', $contenido);
+            echo $contenido;
             break;
         case 'insertaJugador':
             $ctrlAdmin = new CtrlAdmin();
@@ -253,6 +263,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Devuelve la respuesta en formato JSON
             header('Content-Type: application/json');
             echo json_encode($response);
+            $contenido = ob_get_clean();
+
+
+            $contenido = str_replace(PHP_EOL, '', $contenido);
+            echo $contenido;
             break;
          case 'editaJugador':
             $ctrlAdmin = new CtrlAdmin();
@@ -271,6 +286,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Devuelve la respuesta en formato JSON
             header('Content-Type: application/json');
             echo json_encode($response);
+            $contenido = ob_get_clean();
+
+
+            $contenido = str_replace(PHP_EOL, '', $contenido);
+            echo $contenido;
             break;
          case 'agregaNivel':
             $ctrlAdmin = new CtrlAdmin();
@@ -289,6 +309,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Devuelve la respuesta en formato JSON
             header('Content-Type: application/json');
             echo json_encode($response);
+            $contenido = ob_get_clean();
+
+
+            $contenido = str_replace(PHP_EOL, '', $contenido);
+            echo $contenido;
             break;
          case 'editaNivel':
             $ctrlAdmin = new CtrlAdmin();
@@ -307,6 +332,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Devuelve la respuesta en formato JSON
             header('Content-Type: application/json');
             echo json_encode($response);
+            $contenido = ob_get_clean();
+
+
+            $contenido = str_replace(PHP_EOL, '', $contenido);
+            echo $contenido;
             break;
         default:
             echo "Opcion invalida";

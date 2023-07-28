@@ -30,7 +30,12 @@ Class CtrlAdmin{
         $statement->bindParam(1, $nivel_id, PDO::PARAM_INT);
         $statement->bindParam(2, $usuario_id, PDO::PARAM_INT);
         $statement->bindParam(3, $desafio_desc, PDO::PARAM_STR);
-        $statement->bindParam(4, $tiempo_segundos, PDO::PARAM_NULL);
+        $tipo_dato = gettype($tiempo_segundos);
+        if ($tiempo_segundos > 10) {
+            $statement->bindParam(4, $tiempo_segundos);
+        }else{
+            $statement->bindParam(4, $tiempo_segundos, PDO::PARAM_NULL);
+        }
         $statement->bindParam(5, $status, PDO::PARAM_INT);
         $statement->execute();
     
@@ -47,7 +52,12 @@ Class CtrlAdmin{
         $statement->bindParam(2, $nivel_id, PDO::PARAM_INT);
         $statement->bindParam(3, $usuario_id, PDO::PARAM_INT);
         $statement->bindParam(4, $desafio_desc, PDO::PARAM_STR);
-        $statement->bindParam(5, $tiempo_segundos, PDO::PARAM_NULL);
+        
+        if ($tiempo_segundos > 10) {
+            $statement->bindParam(5, $tiempo_segundos);
+        }else{
+            $statement->bindParam(5, $tiempo_segundos, PDO::PARAM_NULL);
+        }
         $statement->bindParam(6, $status, PDO::PARAM_INT);
         $statement->execute();
         $resultado = $statement->fetch(PDO::FETCH_ASSOC);

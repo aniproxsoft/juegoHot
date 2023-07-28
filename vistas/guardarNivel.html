@@ -110,7 +110,7 @@
                     </div>
                     <div class="form-group">
                         <label class="h2" for="adicional">Adicional:</label>
-                        <input type="text" id="adicional" class="form-control form-control-lg"  />
+                        <input type="text" id="adicional" class="form-control form-control-lg" />
                         <div class="invalid-feedback h1">
                             <h2> El campo adicional debe tener entre 3 y 100 caracteres sin acentos o caracteres
                                 especiales. </h2>
@@ -204,7 +204,13 @@
                                     opcion: opcion
                                 },
                                 success: function (response) {
-                                    if (response.success) {
+                                    const resultadoSinSaltosDeLinea = response.replace(/(\r\n|\r|\n)/g, '');
+                                    console.log(resultadoSinSaltosDeLinea);
+                                    const respuesta = JSON.parse(resultadoSinSaltosDeLinea);;
+                                    console.log(respuesta);
+                                    // Respuesta exitosa
+                                    //if (response.success) {
+                                    if (respuesta.success) {
                                         // Muestra la alerta de éxito y oculta la alerta de error
                                         $("#alertSuccess").removeClass("d-none");
                                         $("#alertError").addClass("d-none");

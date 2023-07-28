@@ -182,7 +182,13 @@
                                     opcion: opcion
                                 },
                                 success: function (response) {
-                                    if (response.success) {
+                                    const resultadoSinSaltosDeLinea = response.replace(/(\r\n|\r|\n)/g, '');
+                                    console.log(resultadoSinSaltosDeLinea);
+                                    const respuesta = JSON.parse(resultadoSinSaltosDeLinea);;
+                                    console.log(respuesta);
+                                    // Respuesta exitosa
+                                    //if (response.success) {
+                                    if (respuesta.success) {
                                         // Muestra la alerta de éxito y oculta la alerta de error
                                         $("#alertSuccess").removeClass("d-none");
                                         $("#alertError").addClass("d-none");

@@ -112,6 +112,10 @@
                             $("#botonAgregar").addClass("disabled");
                             $("#botonAgregar").removeAttr("href");
                             $("#botonAgregar").hide();
+                        } else {
+                            $("#botonAgregar").removeClass("disabled");
+                            $("#botonAgregar").attr("href", "guardarJugador.html?opc=insertaJugador");
+                            $("#botonAgregar").show();
                         }
                         $.each(data, function (index, jugador) {
                             var listItem = $('<div>').addClass('list-group-item list-group-item-action h3');
@@ -159,7 +163,16 @@
                 data: { user: 1 },
                 success: function (data) {
                     listView.empty(); // Limpiar el contenedor antes de mostrar los resultados filtrados
-
+                    if (data.length === 2) {
+                        // Deshabilitar el botón con el id "miBoton"
+                        $("#botonAgregar").addClass("disabled");
+                        $("#botonAgregar").removeAttr("href");
+                        $("#botonAgregar").hide();
+                    } else {
+                        $("#botonAgregar").removeClass("disabled");
+                        $("#botonAgregar").attr("href", "guardarJugador.html?opc=insertaJugador");
+                        $("#botonAgregar").show();
+                    }
                     $.each(data, function (index, jugador) {
                         var listItem = $('<div>').addClass('list-group-item list-group-item-action h3');
 
@@ -237,7 +250,7 @@
                 alertContainer.fadeOut(function () {
                     $(this).remove();
                 });
-            }, 3000);
+            }, 2000);
         }
 
         // Función para scroll hasta la parte superior de la página
